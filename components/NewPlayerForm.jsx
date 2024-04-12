@@ -1,80 +1,84 @@
-import { useState } from 'react';
-import { useAddPlayerMutation } from '../API/index';
+import { useState } from "react";
+import { useAddPlayerMutation } from "../API/index";
 
-const NewPlayerForm = () => {
-  const [addNewPlayer] = useAddPlayerMutation();
-  const [formData, setFormData] = useState({
-    name: '',
-    breed: '',
-    status: '',
-    imageURL: '',
-    teamID: '',
+function NewPlayerForm() {
+  const [addPlayer, { isLoading }] = useAddPlayerMutation();
+  const [playerData, setPlayerData] = useState({
+    name: "",
+    breed: "",
+    status: "",
+    imageUrl: "",
   });
-
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value});
-  }
-
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setPlayerData({
+      ...playerData,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    addNewPlayer(formData)
-      .unwrap()
-      .then(() => {})
-      .then((error) => {
-        console.log(error);
-      });
-
-    setFormData({
-      name: '',
-      breed: '',
-      status: '',
-      imageURL: '',
-      teamID: '',
-    })
-  }
-
+    try {
+      await addPlayer(playerData);
+    } catch (error) {
+      console.error("Error Adding New Player", error);
+    }
+  };
   return (
-    <div>
-      <h1>New Player Form</h1>
-      <form className='addPlayer' name='addPlayer' onSubmit={handleSubmit}>
-        <label>
-          Name:
-          <input 
-            type='text' 
-            name='name'
-            value={formData.name} 
-            onChange={handleFormChange} />
-        </label>
-        <label>
-          Status:
-          <input 
-          type='text' 
-          name='status'
-          value={formData.status} 
-          onChange={handleFormChange} />
-        </label>
-        <label>
-          Breed:
-          <input 
-          type='text'
-          name='breed'
-          value={formData.breed} 
-          onChange={handleFormChange} />
-        </label>
-        <label>
-          Image:
-          <input 
-          type='file' 
-          name='image'
-          accept='image/*' 
-          onChange={handleFormChange} />
-        </label>
-        <button type='submit'>Add Player</button>
-      </form>
-    </div>
+    <>
+      <div className="form-container">
+        <h1>Add New Player</h1>
+        <form onSubmit={handleSubmit}>
+          <label>
+            Player Name:
+            <input
+              type="text"
+              name="name"
+              value={playerData.name}
+              onChange={handleChange}
+            />
+          </label>
+          <br />
+          <br />
+          <label>
+            Player Breed:
+            <input
+              type="text"
+              name="breed"
+              value={playerData.breed}
+              onChange={handleChange}
+            />
+          </label>
+          <br />
+          <br />
+          <label>
+            Player Status:
+            <input
+              type="text"
+              name="status"
+              placeholder="Enter 'field' or 'bench'"
+              value={playerData.status}
+              onChange={handleChange}
+            />
+          </label>
+          <br />
+          <br />
+          <label>
+            Player Image URL:
+            <input
+              type="text"
+              name="imageUrl"
+              value={playerData.imageUrl}
+              onChange={handleChange}
+            />
+          </label>
+          <br />
+          <br />
+          <button type="submit" disabled={isLoading}>
+            {isLoading ? "Creating..." : "Create Player"}
+          </button>
+        </form>
+      </div>
+    </>
   );
-};
-
+}
 export default NewPlayerForm;

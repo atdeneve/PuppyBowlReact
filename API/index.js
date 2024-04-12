@@ -1,10 +1,9 @@
-// Import createApi (function to create an API service) and fetchBaseQuery (a basic fetch wrapper)
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const puppyBowlApi = createApi({
   reducerPath: "puppyBowlApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://fsa-puppy-bowl.herokuapp.com/api/2310-fsa-pt-web'
+    baseUrl: 'https://fsa-puppy-bowl.herokuapp.com/api/2310-fsa-pt-web',
   }),
   endpoints: (builder) => ({
     getPlayers: builder.query({
@@ -15,6 +14,9 @@ export const puppyBowlApi = createApi({
         url: '/players',
         method: 'POST',
         body: player,
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        }
       })
     }),
     getPlayer: builder.query({
